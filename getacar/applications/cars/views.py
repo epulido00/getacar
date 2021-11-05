@@ -12,10 +12,7 @@ from .serializers import (
 from .models import Car 
 
 # Create your views here.
-def index(request):
-    return HttpResponse("Hola mundo, es una prueba")
-
-class CarView(ListAPIView):
+class CarApiView(ListAPIView):
 
     serializer_class = CarSerializer
 

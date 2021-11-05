@@ -39,6 +39,7 @@ MY_APPS = (
 
 THIRD_PARTY = (
     'rest_framework',
+    'rest_framework.authtoken',
 )
 
 '''INSTALLED_APPS = [

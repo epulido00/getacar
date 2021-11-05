@@ -11,7 +11,6 @@ class User(AbstractBaseUser, PermissionsMixin):
         ('F', 'Femenino')
     )
 
-    username = models.CharField(max_length=10)
     email = models.EmailField(unique=True)
     nombres = models.CharField(max_length=30, blank = True)
     apellidos = models.CharField(max_length=30, blank = True)
@@ -21,12 +20,13 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     USERNAME_FIELD = 'email'
 
-    REQUIRED_FIELDS = ['username']
-
     objects = UserManager()
 
     class Meta:
         verbose_name = 'Usuario'
         verbose_name_plural = 'Usuarios'
+
+    def __str__(self):
+        return self.email
 
 
