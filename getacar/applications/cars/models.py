@@ -2,6 +2,9 @@ from django.db import models
 
 from applications.users.models import User
 
+
+from .managers import CarManager
+
 # Create your models here.
 
 class Car(models.Model):
@@ -18,6 +21,8 @@ class Car(models.Model):
     transmission = models.CharField(max_length=1, choices=TRANSMISSION_CHOICES, blank=True)
     price = models.FloatField()
     user = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    objects = CarManager()
 
     class Meta:
         verbose_name = 'Auto'

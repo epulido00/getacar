@@ -3,11 +3,18 @@ from django.contrib.auth.hashers import check_password
 
 # Third Party
 from rest_framework.views import APIView
+from rest_framework.generics import (
+    ListAPIView,
+)
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 
 from .models import User
+from applications.cars.models import Car
+from applications.cars.serializers import CarSerializer
 
 # Create your views here.
 class RegisterUser(APIView):
@@ -35,7 +42,7 @@ class RegisterUser(APIView):
 class LoginUser(APIView):
     def post(self, request):
         try:
-            user = User.objects.get(email='edwin@hotmail.com')
+            user = User.objects.get(email=request.data['email'])
 
             pwd_valid = check_password(request.data['password'], user.password)
 
