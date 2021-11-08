@@ -1,0 +1,141 @@
+openapi: 3.0.2
+info:
+  title: ''
+  version: ''
+paths:
+  /api/cars:
+    get:
+      operationId: listCars
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+          description: ''
+      tags:
+      - api
+  /api/cars-by-user:
+    get:
+      operationId: listCars
+      description: ''
+      parameters: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Car'
+          description: ''
+      tags:
+      - api
+  /api/cars/add:
+    post:
+      operationId: createCar
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Car'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Car'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Car'
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Car'
+          description: ''
+      tags:
+      - api
+  /api/register:
+    post:
+      operationId: createRegisterUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+          application/x-www-form-urlencoded:
+            schema: {}
+          multipart/form-data:
+            schema: {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+      tags:
+      - api
+  /api/login:
+    post:
+      operationId: createLoginUser
+      description: ''
+      parameters: []
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+          application/x-www-form-urlencoded:
+            schema: {}
+          multipart/form-data:
+            schema: {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema: {}
+          description: ''
+      tags:
+      - api
+components:
+  schemas:
+    Car:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        brand:
+          type: string
+          maxLength: 20
+        model:
+          type: string
+          maxLength: 20
+        year:
+          type: integer
+          maximum: 2147483647
+          minimum: -2147483648
+        type_car:
+          type: string
+          maxLength: 20
+        transmission:
+          enum:
+          - M
+          - A
+          type: string
+        price:
+          type: number
+        user:
+          type: integer
+      required:
+      - brand
+      - model
+      - year
+      - type_car
+      - price
+      - user

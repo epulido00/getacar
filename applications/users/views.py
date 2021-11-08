@@ -2,9 +2,9 @@ from django.shortcuts import render
 from django.contrib.auth.hashers import check_password
 
 # Third Party
-from rest_framework.views import APIView
 from rest_framework.generics import (
     ListAPIView,
+    GenericAPIView
 )
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -13,11 +13,15 @@ from rest_framework.permissions import IsAuthenticated
 
 
 from .models import User
+from .serializers import UserLoginSerializer, UserRegisterSerializer
 from applications.cars.models import Car
 from applications.cars.serializers import CarSerializer
 
 # Create your views here.
-class RegisterUser(APIView):
+class RegisterUser(GenericAPIView):
+
+    serializer_class = UserRegisterSerializer
+
     def post(self, request):
         user = User.objects.create_user(
             request.data['email'],
@@ -41,7 +45,10 @@ class RegisterUser(APIView):
         })
 
 
-class LoginUser(APIView):
+class LoginUser(GenericAPIView):
+
+    serializer_class = UserLoginSerializer
+
     def post(self, request):
         try:
             user = User.objects.get(email=request.data['email'])
