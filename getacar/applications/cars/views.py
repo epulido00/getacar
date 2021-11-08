@@ -5,6 +5,7 @@ from rest_framework.generics import (
     ListAPIView,
     CreateAPIView
 )
+from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 
@@ -19,7 +20,6 @@ from django.db.models import Q
 
 # Create your views here.
 class CarApiView(ListAPIView):
-
     serializer_class = CarSerializer
 
     def get_queryset(self):
@@ -55,5 +55,9 @@ class AddCar(CreateAPIView):
     authentication_classes = (TokenAuthentication,)
     permission_classes = [IsAuthenticated]
 
-    def get_querset(self):
+    def post(self, request):
+        print(request.user)
+        return Response({"Hola"})
+
+    def get_queryset(self):
         return Car.objects.lastest()

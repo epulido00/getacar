@@ -24,6 +24,7 @@ class RegisterUser(APIView):
             request.data['password'],
             nombres=request.data['nombres'],
             apellidos=request.data['apellidos'],
+            telefono=request.data['telefono']
         )
 
         token = Token.objects.create(user=user)
@@ -34,7 +35,8 @@ class RegisterUser(APIView):
                 'id':user.pk,
                 'email':user.email,
                 'nombres':user.nombres,
-                'apellidos':user.apellidos
+                'apellidos':user.apellidos,
+                'telefono':user.telefono
             }
         })
 
@@ -54,7 +56,8 @@ class LoginUser(APIView):
                         'id':user.pk,
                         'email':user.email,
                         'nombres':user.nombres,
-                        'apellidos':user.apellidos
+                        'apellidos':user.apellidos,
+                        'telefono':user.telefono
                     }
                 })
             else:

@@ -10,11 +10,12 @@ ALLOWED_HOSTS = []
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.mysql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': get_secret('DB_NAME'),
         'USER': get_secret('DB_USER'),
         'PASSWORD': get_secret('DB_PASSWORD'),
-        'HOST': '/Applications/MAMP/tmp/mysql/mysql.sock',
+        'HOST': get_secret('DB_HOST'),
+        'PORT': get_secret('DB_PORT')
     }
 }
 
