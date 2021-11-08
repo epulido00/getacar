@@ -1,7 +1,3 @@
-"""
-from django.core.exceptions import ImproperlyConfigured
-import json
-"""
 
 
 
@@ -15,21 +11,25 @@ BASE_DIR = Path(__file__).ancestor(3)
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-"""
-with open("secret.json") as f:
-    secret = json.loads(f.read())
+if config('DJANGO_PRODUCTION', default = False):
+    SECRET_KEY = config('SECRET_KEY')
+else:
+    from django.core.exceptions import ImproperlyConfigured
+    import json
+
+    with open("secret.json") as f:
+        secret = json.loads(f.read())
 
 
-def get_secret(secret_name, secrets=secret):
-    try:
-        return secrets[secret_name]
-    except:
-        msg = "La variable " + secret_name + " no existe"
-        raise ImproperlyConfigured(msg)
-"""
+    def get_secret(secret_name, secrets=secret):
+        try:
+            return secrets[secret_name]
+        except:
+            msg = "La variable " + secret_name + " no existe"
+            raise ImproperlyConfigured(msg)
 
+    SECRET_KEY = get_secret('SECRET_KEY')
 
-SECRET_KEY = config('SECRET_KEY')
 
 # Application definition
 
