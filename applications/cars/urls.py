@@ -3,8 +3,15 @@ from django.urls import path
 
 from . import views
 
+app_name = "cars_app"
+
 urlpatterns = [
-    path('api/cars', views.CarApiView.as_view()),
-    path('api/cars-by-user', views.CarsUser.as_view()),
-    path('api/cars/add', views.AddCar.as_view()),
+    path(
+        'api/cars/',
+        views.CarView.as_view(),
+    ),
+    path(
+        'api/cars/<pk>/',
+        views.CarViewOptions.as_view(),
+    ),
 ]

@@ -3,7 +3,7 @@ info:
   title: ''
   version: ''
 paths:
-  /api/cars:
+  /api/cars/:
     get:
       operationId: listCars
       description: ''
@@ -19,7 +19,7 @@ paths:
           description: ''
       tags:
       - api
-  /api/cars-by-user:
+  /api/cars-by-user/:
     get:
       operationId: listCars
       description: ''
@@ -35,7 +35,7 @@ paths:
           description: ''
       tags:
       - api
-  /api/cars/add:
+  /api/cars/add/:
     post:
       operationId: createCar
       description: ''
@@ -60,45 +60,53 @@ paths:
           description: ''
       tags:
       - api
-  /api/register:
+  /api/register/:
     post:
-      operationId: createRegisterUser
+      operationId: createUserRegister
       description: ''
       parameters: []
       requestBody:
         content:
           application/json:
-            schema: {}
+            schema:
+              $ref: '#/components/schemas/UserRegister'
           application/x-www-form-urlencoded:
-            schema: {}
+            schema:
+              $ref: '#/components/schemas/UserRegister'
           multipart/form-data:
-            schema: {}
+            schema:
+              $ref: '#/components/schemas/UserRegister'
       responses:
         '201':
           content:
             application/json:
-              schema: {}
+              schema:
+                $ref: '#/components/schemas/UserRegister'
           description: ''
       tags:
       - api
-  /api/login:
+  /api/login/:
     post:
-      operationId: createLoginUser
+      operationId: createUserLogin
       description: ''
       parameters: []
       requestBody:
         content:
           application/json:
-            schema: {}
+            schema:
+              $ref: '#/components/schemas/UserLogin'
           application/x-www-form-urlencoded:
-            schema: {}
+            schema:
+              $ref: '#/components/schemas/UserLogin'
           multipart/form-data:
-            schema: {}
+            schema:
+              $ref: '#/components/schemas/UserLogin'
       responses:
         '201':
           content:
             application/json:
-              schema: {}
+              schema:
+                $ref: '#/components/schemas/UserLogin'
           description: ''
       tags:
       - api
@@ -139,3 +147,42 @@ components:
       - type_car
       - price
       - user
+    UserRegister:
+      type: object
+      properties:
+        nombres:
+          type: string
+          maxLength: 30
+        apellidos:
+          type: string
+          maxLength: 30
+        genero:
+          type: string
+          maxLength: 1
+        telefono:
+          type: string
+          maxLength: 10
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+          maxLength: 20
+      required:
+      - nombres
+      - apellidos
+      - genero
+      - telefono
+      - email
+      - password
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+          format: email
+        password:
+          type: string
+      required:
+      - email
+      - password

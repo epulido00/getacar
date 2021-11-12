@@ -20,6 +20,7 @@ class Car(models.Model):
     type_car = models.CharField(max_length=20)
     transmission = models.CharField(max_length=1, choices=TRANSMISSION_CHOICES, blank=True)
     price = models.FloatField()
+    image = models.CharField(max_length=200, blank=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
     objects = CarManager()

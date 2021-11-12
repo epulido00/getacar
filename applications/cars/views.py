@@ -3,11 +3,12 @@ from django.http import HttpResponse
 
 from rest_framework.generics import (
     ListAPIView,
-    CreateAPIView
+    CreateAPIView,
+    GenericAPIView
 )
 from rest_framework.response import Response
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
 
 from .serializers import (
     CarSerializer,
@@ -18,12 +19,34 @@ from .models import Car
 
 from django.db.models import Q
 
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        SAFE_METHODS = ['GET']
+        return request.method in SAFE_METHODS
+
 # Create your views here.
-class CarApiView(ListAPIView):
+class CarView(GenericAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated|ReadOnly]
     serializer_class = CarSerializer
 
-    def get_queryset(self):
+    def post(self, request):
 
+        Car.objects.create(
+            brand=request.data['brand'],
+            model=request.data['model'],
+            year=request.data['year'],
+            type_car=request.data['type_car'],
+            transmission=request.data['transmission'],
+            price=request.data['price'],
+            image=request.data['image'],
+            user=self.request.user
+        )
+        
+        serializer = CarSerializer(Car.objects.latest('id'))
+        return Response(serializer.data)
+
+    def get(self, request):
         if self.request.GET:
             query = Q()
 
@@ -35,29 +58,39 @@ class CarApiView(ListAPIView):
 
             if self.request.GET.get('model'):
                 query.add(Q(model=self.request.GET.get('model')), Q.AND)
+        
+            queryset = Car.objects.filter(query)
+            serializer = CarSerializer(queryset, many=True)
 
+            return Response(serializer.data)
 
-            return Car.objects.filter(query)
         else:
-            return Car.objects.all()
+            serializer = CarSerializer(Car.objects.all(), many=True)
+            return Response(serializer.data)
 
 
-class CarsUser(ListAPIView):
-    serializer_class = CarSerializer
+class CarViewOptions(GenericAPIView):
     authentication_classes = (TokenAuthentication,)
-    permission_classes = [IsAuthenticated]
-
-    def get_queryset(self):
-        return Car.objects.get_cars_by_user(self.request.user)
-       
-class AddCar(CreateAPIView):
+    permission_classes = [IsAuthenticated|ReadOnly]
     serializer_class = CarSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = [IsAuthenticated]
 
-    def post(self, request):
-        print(request.user)
-        return Response({"Hola"})
+    def delete(self, request, pk):
+        try:
+            car = Car.objects.get(
+                id=pk,
+                user=self.request.user
+            )
+            car.delete()
 
-    def get_queryset(self):
-        return Car.objects.lastest()
+            return Response({})
+        except Car.DoesNotExist:
+            return Response({'details':'Ha habido un error con tu consulta el auto no existe o no es del usuario'})
+
+    def get(self, request, pk):
+        try:
+            car = Car.objects.get(id=pk)
+            serializer = CarSerializer(car) 
+            return Response(serializer.data)
+        except Car.DoesNotExist:
+            return Response({'details':'El auto al que tratas de acceder no existe'})
+

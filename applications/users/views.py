@@ -23,26 +23,32 @@ class RegisterUser(GenericAPIView):
     serializer_class = UserRegisterSerializer
 
     def post(self, request):
-        user = User.objects.create_user(
-            request.data['email'],
-            request.data['password'],
-            nombres=request.data['nombres'],
-            apellidos=request.data['apellidos'],
-            telefono=request.data['telefono']
-        )
+        try:
+            user = User.objects.get(email=request.data['email'])
 
-        token = Token.objects.create(user=user)
+            return Response({'details':'El correo que ingresaste ya esta dado de alta'})
+        except User.DoesNotExist:
+            user = User.objects.create_user(
+                request.data['email'],
+                request.data['password'],
+                nombres=request.data['nombres'],
+                apellidos=request.data['apellidos'],
+                genero=request.data['genero'],
+                telefono=request.data['telefono']
+            )
 
-        return Response({
-            'token':token.key,
-            'users': {
-                'id':user.pk,
-                'email':user.email,
-                'nombres':user.nombres,
-                'apellidos':user.apellidos,
-                'telefono':user.telefono
-            }
-        })
+            token = Token.objects.create(user=user)
+
+            return Response({
+                'token':token.key,
+                'users': {
+                    'id':user.pk,
+                    'email':user.email,
+                    'nombres':user.nombres,
+                    'apellidos':user.apellidos,
+                    'telefono':user.telefono
+                }
+            })
 
 
 class LoginUser(GenericAPIView):

@@ -23,8 +23,6 @@ from rest_framework.schemas import get_schema_view
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    re_path('', include('applications.cars.urls')),
-    re_path('', include('applications.users.urls')),
     path('openapi', get_schema_view(
         title="Get a Car",
         description="App, para compra/venta de autos",
@@ -34,4 +32,6 @@ urlpatterns = [
         template_name='swagger/swagger-ui.html',
         extra_context={'schema_url':'openapi-schema'}
     ), name='swagger-ui'),
+    re_path('', include('applications.cars.urls')),
+    re_path('', include('applications.users.urls')),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
