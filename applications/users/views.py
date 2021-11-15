@@ -4,7 +4,8 @@ from django.contrib.auth.hashers import check_password
 # Third Party
 from rest_framework.generics import (
     ListAPIView,
-    GenericAPIView
+    GenericAPIView,
+    RetrieveAPIView
 )
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -13,9 +14,7 @@ from rest_framework.permissions import IsAuthenticated
 
 
 from .models import User
-from .serializers import UserLoginSerializer, UserRegisterSerializer
-from applications.cars.models import Car
-from applications.cars.serializers import CarSerializer
+from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer
 
 # Create your views here.
 class RegisterUser(GenericAPIView):
@@ -79,3 +78,17 @@ class LoginUser(GenericAPIView):
         except User.DoesNotExist:
             return Response({'details':'El correo no existe'})
          
+
+class UserDetails(GenericAPIView):
+
+    serializer_class = UserSerializer
+    
+    def get(self, request, pk):
+
+        user = User.objects.get(id=pk)
+        serializer = UserSerializer(user)
+
+        return Response({
+            'user': serializer.data
+        })
+
