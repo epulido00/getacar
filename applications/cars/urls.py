@@ -11,6 +11,10 @@ urlpatterns = [
         views.CarView.as_view(),
     ),
     path(
+        'api/cars/user/',
+        views.CarsByUser.as_view(),
+    ),
+    path(
         'api/cars/<pk>/',
         views.CarViewOptions.as_view(),
     ),

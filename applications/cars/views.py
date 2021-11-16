@@ -94,3 +94,12 @@ class CarViewOptions(GenericAPIView):
         except Car.DoesNotExist:
             return Response({'details':'El auto al que tratas de acceder no existe'})
 
+class CarsByUser(ListAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated|ReadOnly]
+    serializer_class = CarSerializer
+
+    def get_queryset(self):
+        return Car.objects.filter(user=self.request.user.id)
+
+

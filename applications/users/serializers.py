@@ -23,5 +23,5 @@ class UserSerializer(serializers.ModelSerializer):
             'nombres', 
             'apellidos', 
             'genero', 
-            'telefono'
+            'telefono',
         )
