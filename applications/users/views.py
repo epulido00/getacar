@@ -10,13 +10,19 @@ from rest_framework.generics import (
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
 from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, BasePermission
 
 
 from .models import User
 from .serializers import UserLoginSerializer, UserRegisterSerializer, UserSerializer
 
 # Create your views here.
+class ReadOnly(BasePermission):
+    def has_permission(self, request, view):
+        SAFE_METHODS = ['GET']
+        return request.method in SAFE_METHODS
+
+
 class RegisterUser(GenericAPIView):
 
     serializer_class = UserRegisterSerializer
@@ -82,6 +88,7 @@ class LoginUser(GenericAPIView):
 class UserDetails(GenericAPIView):
 
     serializer_class = UserSerializer
+
     
     def get(self, request, pk):
 
@@ -92,3 +99,46 @@ class UserDetails(GenericAPIView):
             'user': serializer.data
         })
 
+
+class UserUpdate(GenericAPIView):
+    authentication_classes = (TokenAuthentication,)
+    permission_classes = [IsAuthenticated]
+    serializer_class = UserSerializer
+
+    def get(self, request):
+        user = User.objects.get(
+            id = self.request.user.pk
+        )
+        user = UserSerializer(user)
+        return Response(user.data)
+
+    def put(self, request):
+
+        required_data = ['email', 'nombres', 'apellidos', 'genero', 'telefono']
+        if all(key in request.data for key in required_data):
+            user = User.objects.get(
+                id = self.request.user.pk
+            )
+
+            user.email = request.data['email']
+            user.nombres = request.data['nombres']
+            user.apellidos = request.data['apellidos']
+            user.genero = request.data['genero']
+            user.telefono = request.data['telefono']
+
+            user.save()
+
+            user_serializer = UserSerializer(user)
+            return Response(user_serializer.data)
+        else:
+            return Response({
+                'details': 'No has pasado los campos requeridos',
+                'datos_requeridos': [
+                    'email',
+                    'nombres',
+                    'apellidos',
+                    'genero',
+                    'telefono'
+                ]
+            })
+        

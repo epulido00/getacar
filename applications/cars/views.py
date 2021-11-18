@@ -86,6 +86,50 @@ class CarViewOptions(GenericAPIView):
         except Car.DoesNotExist:
             return Response({'details':'Ha habido un error con tu consulta el auto no existe o no es del usuario'})
 
+    def put(self, request, pk):
+        try:
+            car = Car.objects.get(
+                id=pk,
+                user=self.request.user
+            )
+
+            required_data = ['brand', 'model', 'year', 'type_car', 'transmission', 'price', 'image']
+            if all( key in request.data for key in required_data ):
+
+                car.brand = request.data['brand']
+                car.model = request.data['model']
+                car.year = request.data['year']
+                car.type_car = request.data['type_car']
+                car.transmission = request.data['transmission']
+                car.price = request.data['price']
+                car.image = request.data['image']
+
+                car.save()
+
+            
+                serializer = CarSerializer(car)
+
+                return Response(serializer.data)
+
+            else:
+
+                return Response({
+                    'details': 'No has mandado los datos requeridos',
+                    'datos_requeridos': [
+                        'brand',
+                        'model',
+                        'year',
+                        'type_car',
+                        'transmission',
+                        'price',
+                        'image'
+                    ]
+                })
+
+        except Car.DoesNotExist:
+            return Response({'details': 'El auto al que tratas de acceder no existe o no te pertenece'})
+
+
     def get(self, request, pk):
         try:
             car = Car.objects.get(id=pk)
@@ -93,6 +137,7 @@ class CarViewOptions(GenericAPIView):
             return Response(serializer.data)
         except Car.DoesNotExist:
             return Response({'details':'El auto al que tratas de acceder no existe'})
+
 
 class CarsByUser(ListAPIView):
     authentication_classes = (TokenAuthentication,)
