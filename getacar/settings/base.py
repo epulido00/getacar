@@ -136,7 +136,7 @@ USE_TZ = True
 CORS_ALLOWED_ORIGINS = [
     'http://localhost:4200',
     'https://localhost:4200',
-    'https://igetacar-angular.herokuapp.com/login'
+    'https://igetacar-angular.herokuapp.com'
 ]
 
 # Default primary key field type
